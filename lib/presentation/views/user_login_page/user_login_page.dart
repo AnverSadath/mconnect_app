@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:mconnect_app/data/datasources/user_login_datasources.dart';
@@ -403,11 +404,7 @@ class _LoginPageState extends State<LoginPage> {
                                     passwordcontroller.text);
 
                             if (response != null && response.status == 1) {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => HomePage(),
-                                  ));
+                              context.pushNamed("home");
                             } else {
                               _showErrorDialog(response!.message ?? "");
                             }
@@ -457,11 +454,7 @@ class _LoginPageState extends State<LoginPage> {
                         )),
                     TextButton(
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => RegistrationPage(),
-                              ));
+                          context.pushNamed("registration");
                         },
                         child: Text("Register",
                             style: GoogleFonts.raleway(

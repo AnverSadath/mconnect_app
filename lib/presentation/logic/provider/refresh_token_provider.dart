@@ -17,4 +17,8 @@ class TokenRefreshProvider extends ChangeNotifier {
       throw (e);
     }
   }
+
+  bool isTokenExpired(String? tokenExpiry) {
+    return tokenRefreshRepo.isTokenExpired(tokenExpiry);
+  }
 }

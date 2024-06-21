@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mconnect_app/presentation/views/user_login_page/user_login_page.dart';
 
@@ -52,11 +52,7 @@ class _RegistrationSuccessState extends State<RegistrationSuccess> {
                       minimumSize: Size(144, 55),
                       backgroundColor: Color(0xFF2F52A2)),
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => LoginPage(),
-                        ));
+                    context.pushNamed("login");
                   },
                   child: Text(
                     "Go to Home",

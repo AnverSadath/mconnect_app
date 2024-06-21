@@ -16,4 +16,8 @@ class TokenRefreshRepoImpl extends TokenRefreshRepo {
       throw (e);
     }
   }
+
+  bool isTokenExpired(String? tokenExpiry) {
+    return tokenDatasource.isTokenExpired(tokenExpiry);
+  }
 }

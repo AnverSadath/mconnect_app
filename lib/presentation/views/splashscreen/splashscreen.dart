@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mconnect_app/data/datasources/refresh_token_datasources.dart';
-import 'package:mconnect_app/data/models/refresh_token_model.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mconnect_app/core/injection_container.dart';
 import 'package:mconnect_app/domain/entities/refresh_token_entities.dart';
-import 'package:mconnect_app/domain/repositories/refresh_token_repo.dart';
 import 'package:mconnect_app/presentation/logic/provider/refresh_token_provider.dart';
 import 'package:mconnect_app/presentation/views/user_login_page/user_login_page.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -16,11 +14,12 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  final TokenDatasourceImpl tokenDatasource = TokenDatasourceImpl();
+  late TokenRefreshProvider tokenRefreshProvider;
 
   @override
   void initState() {
     super.initState();
+    tokenRefreshProvider = sl<TokenRefreshProvider>();
     checkToken();
   }
 
@@ -33,24 +32,17 @@ class _SplashScreenState extends State<SplashScreen> {
 
     if (token != null &&
         tokenExpiry != null &&
-        !tokenDatasource.isTokenExpired(tokenExpiry)) {
+        !tokenRefreshProvider.isTokenExpired(tokenExpiry)) {
       // Token is not expired, navigate to home screen
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => LoginPage()),
-      );
+      context.goNamed("login");
       print("Token is not expired");
     } else {
       print("Token is expired");
 
-      final tokenrefresh =
-          Provider.of<TokenRefreshProvider>(context, listen: false);
-      RefreshTokenEntities? response = await tokenrefresh.tokenRefresh();
+      RefreshTokenEntities? response =
+          await tokenRefreshProvider.tokenRefresh();
       if (response != null && response.status == 1) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => LoginPage()),
-        );
+        context.goNamed("login");
       }
     }
   }
@@ -60,25 +52,6 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       body: Center(
         child: CircularProgressIndicator(), // Loading indicator
-      ),
-    );
-  }
-}
-
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text("Homepage"),
       ),
     );
   }

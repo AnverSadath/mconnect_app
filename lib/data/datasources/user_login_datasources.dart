@@ -1,12 +1,9 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:mconnect_app/data/datasources/refresh_token_datasources.dart';
+import 'package:mconnect_app/core/constants/url.dart';
+import 'package:mconnect_app/data/datasources/api_http_client.dart';
 import 'package:mconnect_app/data/models/login_pin_bio_model.dart';
-
 import 'package:mconnect_app/data/models/user_login_model.dart';
-
 import 'package:mconnect_app/domain/request/user_login_request.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class UserLoginDataSource {
@@ -17,14 +14,14 @@ abstract class UserLoginDataSource {
   Future<LoginPinBioDtos?> loginWithBio();
 }
 
-class UserLoginDataSourceImpl extends UserLoginDataSource {
+class UserLoginDataSourceImpl extends ApiClient implements UserLoginDataSource {
+  UserLoginDataSourceImpl({required super.client});
 // Loginuser
 
   Future<UserLoginDtos?> loginUser(UserLoginRequest userLoginRequest) async {
-    final url =
-        "http://manvish.mnets.in/API/CommanAPIRequest.aspx/ReceiveRequestmCOnnect";
+    final url = Url.baseUrl;
     try {
-      final response = await http.post(Uri.parse(url),
+      final response = await client.post(Uri.parse(url),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode(userLoginRequest.toJson()));
 
@@ -39,10 +36,12 @@ class UserLoginDataSourceImpl extends UserLoginDataSource {
             loginDtos.data![0][0].token != null) {
           String token2 = loginDtos.data![0][0].token!;
           int userId = loginDtos.id ?? 0;
+          //   String tokenExpiry = loginDtos.data![0][0].tokenExpiry!;
 
           SharedPreferences prefs2 = await SharedPreferences.getInstance();
           await prefs2.setString("token2", token2);
           await prefs2.setInt("userId", userId);
+          //   await prefs2.setString("tokenExpiry", tokenExpiry);
 
           print("loginUser Token saved: $token2");
         } else {
@@ -67,11 +66,11 @@ class UserLoginDataSourceImpl extends UserLoginDataSource {
     SharedPreferences prefs2 = await SharedPreferences.getInstance();
     final token2 = prefs2.getString("token2");
     final userId = prefs2.getInt("userId") ?? 0;
+    //   final tokenexpiry = prefs2.getString("tokenExpiry");
 
-    final url =
-        "http://manvish.mnets.in/API/CommanAPIRequest.aspx/ReceiveRequestmCOnnect";
+    final url = Url.baseUrl;
 
-    final requqestBody = jsonEncode({
+    final requestBody = jsonEncode({
       "request": [
         {"Key": "type", "Value": "mConnectApp_UserLoginPIN"},
         {"Key": "UserID", "Value": userId},
@@ -80,12 +79,12 @@ class UserLoginDataSourceImpl extends UserLoginDataSource {
     });
 
     try {
-      final response = await http.post(Uri.parse(url),
+      final response = await client.post(Uri.parse(url),
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $token2'
           },
-          body: requqestBody);
+          body: requestBody);
 
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
@@ -103,6 +102,7 @@ class UserLoginDataSourceImpl extends UserLoginDataSource {
           String tokenExpiry = loginPinBioDtos.data![0][0].tokenExpiry!;
 
           SharedPreferences prefs3 = await SharedPreferences.getInstance();
+
           await prefs3.setString("tokenExpiry", tokenExpiry);
 
           print("loginWithBio New token saved: $newToken");
@@ -126,25 +126,25 @@ class UserLoginDataSourceImpl extends UserLoginDataSource {
     SharedPreferences prefs2 = await SharedPreferences.getInstance();
     final token2 = prefs2.getString("token2");
     final userId = prefs2.getInt("userId") ?? 0;
+    //   final tokenexpiry = prefs2.getString("tokenExpiry");
 
-    final url =
-        "http://manvish.mnets.in/API/CommanAPIRequest.aspx/ReceiveRequestmCOnnect";
+    final url = Url.baseUrl;
 
-    final requqestBody = jsonEncode({
+    final requestBody = jsonEncode({
       "request": [
         {"Key": "type", "Value": "mConnectApp_UserLoginPIN"},
         {"Key": "UserID", "Value": userId},
-        {"Key": "Mode", "Value": "BIO"}
+        {"Key": "Mode", "Value": "PIN"}
       ]
     });
 
     try {
-      final response = await http.post(Uri.parse(url),
+      final response = await client.post(Uri.parse(url),
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $token2'
           },
-          body: requqestBody);
+          body: requestBody);
 
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
@@ -161,6 +161,7 @@ class UserLoginDataSourceImpl extends UserLoginDataSource {
 
           String tokenExpiry = loginPinBioDtos.data![0][0].tokenExpiry!;
           SharedPreferences prefs3 = await SharedPreferences.getInstance();
+
           await prefs3.setString("tokenExpiry", tokenExpiry);
 
           print("loginWithPin New token saved: $newToken");

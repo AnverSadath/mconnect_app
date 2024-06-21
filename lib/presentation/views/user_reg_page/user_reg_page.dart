@@ -1,8 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mconnect_app/data/models/user_reg_model.dart';
 import 'package:mconnect_app/domain/entities/registration_entities.dart';
 import 'package:mconnect_app/presentation/logic/provider/user_reg_provider.dart';
 import 'package:mconnect_app/presentation/views/qr_scanner_page/qr_scanner_page.dart';
@@ -320,12 +318,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                       _passwordController.text);
 
                               if (response != null && response.status == 1) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => QRScannerPage(),
-                                  ),
-                                );
+                                context.pushNamed("qrscanner");
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                         content: Text(response.message ?? "")));

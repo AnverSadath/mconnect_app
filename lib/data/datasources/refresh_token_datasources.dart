@@ -1,14 +1,18 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:mconnect_app/core/constants/url.dart';
+import 'package:mconnect_app/data/datasources/api_http_client.dart';
 import 'package:mconnect_app/data/models/refresh_token_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class TokenDatasource {
   Future<RefreshTokenDtos?> tokenRefresh();
+  bool isTokenExpired(String? tokenExpiry);
 }
 
-class TokenDatasourceImpl extends TokenDatasource {
+class TokenDatasourceImpl extends ApiClient implements TokenDatasource {
+  TokenDatasourceImpl({required super.client});
+
   @override
   Future<RefreshTokenDtos?> tokenRefresh() async {
     SharedPreferences prefs2 = await SharedPreferences.getInstance();
@@ -22,8 +26,7 @@ class TokenDatasourceImpl extends TokenDatasource {
       return null;
     }
 
-    final url =
-        "http://manvish.mnets.in/API/CommanAPIRequest.aspx/ReceiveRequestmCOnnect";
+    final url = Url.baseUrl;
 
     final requestBody = jsonEncode({
       "request": [
@@ -34,7 +37,7 @@ class TokenDatasourceImpl extends TokenDatasource {
     });
 
     try {
-      final response = await http.post(Uri.parse(url),
+      final response = await client.post(Uri.parse(url),
           body: requestBody,
           headers: {
             'Content-Type': 'application/json',
@@ -64,7 +67,8 @@ class TokenDatasourceImpl extends TokenDatasource {
               return refreshTokenDtos;
             }
           }
-          print("Token refresh failed: New token not found in response.");
+          print(
+              "Token refresh failed: New token not found in response${responseData}");
         } else {
           print("Token refresh failed: Response does not contain 'd'.");
         }
@@ -88,28 +92,12 @@ class TokenDatasourceImpl extends TokenDatasource {
       // Normalize whitespace: replace multiple spaces with a single space
       tokenExpiry = tokenExpiry.replaceAll(RegExp(r'\s+'), ' ');
 
-      print(
-          "Token expiry date string: '$tokenExpiry'"); // Debug print statement
+      print("Token expiry date: '$tokenExpiry'"); // Debug print statement
       DateTime expiryDate = DateFormat("MMM dd yyyy hh:mma").parse(tokenExpiry);
       return expiryDate.isBefore(DateTime.now());
     } catch (e) {
       print("Error parsing token expiry date: $e");
       return true;
     }
-
-    // bool isTokenExpired(String? tokenExpiry) {
-    //   if (tokenExpiry == null) {
-    //     return true;
-    //   }
-
-    //   try {
-    //     DateTime expiryDate =
-    //         DateFormat("MMM dd yyyy  hh:mma").parse(tokenExpiry);
-    //     return expiryDate.isBefore(DateTime.now());
-    //   } catch (e) {
-    //     print("Error parsing token expiry date: $e");
-    //     return true;
-    //   }
-    // }
   }
 }

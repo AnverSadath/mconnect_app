@@ -1,8 +1,9 @@
 import 'dart:convert';
+import 'package:mconnect_app/core/constants/url.dart';
+import 'package:mconnect_app/data/datasources/api_http_client.dart';
 import 'package:mconnect_app/domain/request/user_reg_request.dart';
 import 'package:mconnect_app/data/models/user_activate_model.dart';
 import 'package:mconnect_app/data/models/user_reg_model.dart';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class UserRegistrationDatasource {
@@ -12,16 +13,17 @@ abstract class UserRegistrationDatasource {
   Future<UserActivateDtos?> activateUser(String qrCode);
 }
 
-class UserRegistrationDatasourceImpl extends UserRegistrationDatasource {
+class UserRegistrationDatasourceImpl extends ApiClient
+    implements UserRegistrationDatasource {
+  UserRegistrationDatasourceImpl({required super.client});
   //UserRegister
 
   Future<UserRegistrationDtos?> registerUser(
       UserRegistrationRequest userregistrationrequest) async {
-    final url =
-        "http://manvish.mnets.in/API/CommanAPIRequest.aspx/ReceiveRequestmCOnnect";
+    final url = Url.baseUrl;
 
     try {
-      final response = await http.post(Uri.parse(url),
+      final response = await client.post(Uri.parse(url),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode(userregistrationrequest.toJson()));
 
@@ -60,9 +62,7 @@ class UserRegistrationDatasourceImpl extends UserRegistrationDatasource {
   //ActivateUser
 
   Future<UserActivateDtos?> activateUser(String qrCode) async {
-    final url =
-        "http://manvish.mnets.in/API/CommanAPIRequest.aspx/ReceiveRequestmCOnnect";
-
+    final url = Url.baseUrl;
     final requestBody = jsonEncode({
       "request": [
         {"Key": "type", "Value": "mConnectApp_ActivateUser"},
@@ -74,7 +74,7 @@ class UserRegistrationDatasourceImpl extends UserRegistrationDatasource {
     final token1 = prefs1.getString("token1");
 
     try {
-      final response = await http.post(Uri.parse(url),
+      final response = await client.post(Uri.parse(url),
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $token1'

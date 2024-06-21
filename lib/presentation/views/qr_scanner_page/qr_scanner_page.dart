@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mconnect_app/data/models/user_activate_model.dart';
 import 'package:mconnect_app/domain/entities/activate_entities.dart';
 import 'package:mconnect_app/presentation/logic/provider/user_reg_provider.dart';
-import 'package:mconnect_app/presentation/views/registration_success_page/registration_success_page.dart';
-import 'package:mconnect_app/presentation/views/user_reg_page/user_reg_page.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_scanner_overlay/qr_scanner_overlay.dart';
@@ -31,12 +29,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
             await activateUserProvider.activateuser(qrcode);
 
         if (response != null && response.status == 1) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => RegistrationSuccess(),
-            ),
-          );
+          context.pushNamed("regsuccess");
         } else {
           setState(() {
             isError = true;
@@ -69,6 +62,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
                     color: Color(0xFF3D3E8A))),
           ),
         ),
+        SizedBox(height: 5),
         Container(
           decoration: BoxDecoration(
               color: Color(0xFFFFFFFF),
