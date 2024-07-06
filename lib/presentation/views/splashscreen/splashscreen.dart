@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mconnect_app/core/injection_container.dart';
+import 'package:mconnect_app/data/datasources/local_storage.dart';
 import 'package:mconnect_app/domain/entities/refresh_token_entities.dart';
 import 'package:mconnect_app/presentation/logic/provider/refresh_token_provider.dart';
-import 'package:mconnect_app/presentation/views/user_login_page/user_login_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -26,15 +27,18 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> checkToken() async {
     await Future.delayed(Duration(seconds: 3));
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString("token2");
-    final tokenExpiry = prefs.getString("tokenExpiry");
+    final SharedPreferencesService prefsService =
+        await SharedPreferencesService();
+
+    final token = await prefsService.getToken();
+    final tokenExpiry = await prefsService.getTokenExpiry();
+    context.goNamed("login");
 
     if (token != null &&
         tokenExpiry != null &&
         !tokenRefreshProvider.isTokenExpired(tokenExpiry)) {
       // Token is not expired, navigate to home screen
-      context.goNamed("login");
+      // context.goNamed("login");
       print("Token is not expired");
     } else {
       print("Token is expired");
@@ -50,8 +54,29 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: CircularProgressIndicator(), // Loading indicator
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      body: Column(
+        children: [
+          Expanded(
+            child: Center(
+              child: Container(
+                height: 90,
+                width: 200,
+                child: Image.asset("assets/logo.jpeg"),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 5),
+            child: Text(
+              "Powered by Manvish Info Solutions",
+              style: GoogleFonts.raleway(
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.w500,
+                  color: Theme.of(context).colorScheme.onPrimaryContainer),
+            ),
+          )
+        ],
       ),
     );
   }

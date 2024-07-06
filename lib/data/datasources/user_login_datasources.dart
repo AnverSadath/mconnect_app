@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'package:mconnect_app/core/constants/url.dart';
+import 'package:mconnect_app/core/injection_container.dart';
 import 'package:mconnect_app/data/datasources/api_http_client.dart';
+import 'package:mconnect_app/data/datasources/local_storage.dart';
 import 'package:mconnect_app/data/models/login_pin_bio_model.dart';
 import 'package:mconnect_app/data/models/user_login_model.dart';
 import 'package:mconnect_app/domain/request/user_login_request.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class UserLoginDataSource {
   Future<UserLoginDtos?> loginUser(UserLoginRequest userLoginRequest);
@@ -15,6 +16,7 @@ abstract class UserLoginDataSource {
 }
 
 class UserLoginDataSourceImpl extends ApiClient implements UserLoginDataSource {
+  final SharedPreferencesService prefsService = sl<SharedPreferencesService>();
   UserLoginDataSourceImpl({required super.client});
 // Loginuser
 
@@ -36,12 +38,11 @@ class UserLoginDataSourceImpl extends ApiClient implements UserLoginDataSource {
             loginDtos.data![0][0].token != null) {
           String token2 = loginDtos.data![0][0].token!;
           int userId = loginDtos.id ?? 0;
-          //   String tokenExpiry = loginDtos.data![0][0].tokenExpiry!;
+          String tokenExpiry = loginDtos.data![0][0].tokenExpiry!;
 
-          SharedPreferences prefs2 = await SharedPreferences.getInstance();
-          await prefs2.setString("token2", token2);
-          await prefs2.setInt("userId", userId);
-          //   await prefs2.setString("tokenExpiry", tokenExpiry);
+          await prefsService.setToken(token2);
+          await prefsService.setUserId(userId);
+          await prefsService.setTokenExpiry(tokenExpiry);
 
           print("loginUser Token saved: $token2");
         } else {
@@ -63,10 +64,9 @@ class UserLoginDataSourceImpl extends ApiClient implements UserLoginDataSource {
 //LoginWithBio
 
   Future<LoginPinBioDtos?> loginWithBio() async {
-    SharedPreferences prefs2 = await SharedPreferences.getInstance();
-    final token2 = prefs2.getString("token2");
-    final userId = prefs2.getInt("userId") ?? 0;
-    //   final tokenexpiry = prefs2.getString("tokenExpiry");
+    final token2 = await prefsService.getToken();
+    final userId = await prefsService.getUserId();
+    // final tokenexpiry = await prefsService.getTokenExpiry();
 
     final url = Url.baseUrl;
 
@@ -97,13 +97,10 @@ class UserLoginDataSourceImpl extends ApiClient implements UserLoginDataSource {
             loginPinBioDtos.data![0].isNotEmpty &&
             loginPinBioDtos.data![0][0].token != null) {
           String newToken = loginPinBioDtos.data![0][0].token!;
-          await prefs2.setString("token2", newToken);
+          String tokenExpirydate = loginPinBioDtos.data![0][0].tokenExpiry!;
 
-          String tokenExpiry = loginPinBioDtos.data![0][0].tokenExpiry!;
-
-          SharedPreferences prefs3 = await SharedPreferences.getInstance();
-
-          await prefs3.setString("tokenExpiry", tokenExpiry);
+          await prefsService.setToken(newToken);
+          await prefsService.setTokenExpiry(tokenExpirydate);
 
           print("loginWithBio New token saved: $newToken");
         }
@@ -123,10 +120,9 @@ class UserLoginDataSourceImpl extends ApiClient implements UserLoginDataSource {
 //LoginWithPin
 
   Future<LoginPinBioDtos?> loginWithPin() async {
-    SharedPreferences prefs2 = await SharedPreferences.getInstance();
-    final token2 = prefs2.getString("token2");
-    final userId = prefs2.getInt("userId") ?? 0;
-    //   final tokenexpiry = prefs2.getString("tokenExpiry");
+    final token2 = await prefsService.getToken();
+    final userId = await prefsService.getUserId();
+    //  final tokenexpiry = await prefsService.getTokenExpiry();
 
     final url = Url.baseUrl;
 
@@ -157,12 +153,10 @@ class UserLoginDataSourceImpl extends ApiClient implements UserLoginDataSource {
             loginPinBioDtos.data![0].isNotEmpty &&
             loginPinBioDtos.data![0][0].token != null) {
           String newToken = loginPinBioDtos.data![0][0].token!;
-          await prefs2.setString("token2", newToken); // Overwrite the old token
+          String tokenExpirydate = loginPinBioDtos.data![0][0].tokenExpiry!;
 
-          String tokenExpiry = loginPinBioDtos.data![0][0].tokenExpiry!;
-          SharedPreferences prefs3 = await SharedPreferences.getInstance();
-
-          await prefs3.setString("tokenExpiry", tokenExpiry);
+          await prefsService.setToken(newToken); // Overwrite the old token
+          await prefsService.setTokenExpiry(tokenExpirydate);
 
           print("loginWithPin New token saved: $newToken");
         } else {

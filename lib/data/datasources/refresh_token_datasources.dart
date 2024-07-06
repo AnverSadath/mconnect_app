@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:mconnect_app/core/constants/url.dart';
+import 'package:mconnect_app/core/injection_container.dart';
 import 'package:mconnect_app/data/datasources/api_http_client.dart';
+import 'package:mconnect_app/data/datasources/local_storage.dart';
 import 'package:mconnect_app/data/models/refresh_token_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class TokenDatasource {
   Future<RefreshTokenDtos?> tokenRefresh();
@@ -11,14 +12,15 @@ abstract class TokenDatasource {
 }
 
 class TokenDatasourceImpl extends ApiClient implements TokenDatasource {
+  final SharedPreferencesService prefsService = sl<SharedPreferencesService>();
   TokenDatasourceImpl({required super.client});
 
   @override
   Future<RefreshTokenDtos?> tokenRefresh() async {
-    SharedPreferences prefs2 = await SharedPreferences.getInstance();
-    final token2 = prefs2.getString("token2");
-    final userId = prefs2.getInt("userId") ?? 0;
-    final tokenExpiry = prefs2.getString("tokenExpiry");
+    // SharedPreferences prefs2 = await SharedPreferences.getInstance();
+    final token2 = await prefsService.getToken();
+    final userId = await prefsService.getUserId();
+    final tokenExpiry = await prefsService.getTokenExpiry();
 
     //  Check if token exists and not expired
     if (token2 != null && !isTokenExpired(tokenExpiry)) {
@@ -59,16 +61,15 @@ class TokenDatasourceImpl extends ApiClient implements TokenDatasource {
             String? tokenExpiryDate = refreshTokenDtos.data![0][0].tokenExpiry;
 
             if (newToken != null) {
-              await prefs2.setString("token2", newToken);
+              await prefsService.setToken(newToken);
               if (tokenExpiryDate != null) {
-                await prefs2.setString("tokenExpiry", tokenExpiryDate);
+                await prefsService.setTokenExpiry(tokenExpiryDate);
               }
               print("Token Refreshed Successfully: $newToken");
               return refreshTokenDtos;
             }
           }
-          print(
-              "Token refresh failed: New token not found in response${responseData}");
+          print("Token refresh failed: New token not found in response");
         } else {
           print("Token refresh failed: Response does not contain 'd'.");
         }

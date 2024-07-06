@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'package:mconnect_app/core/constants/url.dart';
+import 'package:mconnect_app/core/injection_container.dart';
 import 'package:mconnect_app/data/datasources/api_http_client.dart';
+import 'package:mconnect_app/data/datasources/local_storage.dart';
 import 'package:mconnect_app/domain/request/user_reg_request.dart';
 import 'package:mconnect_app/data/models/user_activate_model.dart';
 import 'package:mconnect_app/data/models/user_reg_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class UserRegistrationDatasource {
   Future<UserRegistrationDtos?> registerUser(
@@ -15,6 +16,7 @@ abstract class UserRegistrationDatasource {
 
 class UserRegistrationDatasourceImpl extends ApiClient
     implements UserRegistrationDatasource {
+  final SharedPreferencesService prefsService = sl<SharedPreferencesService>();
   UserRegistrationDatasourceImpl({required super.client});
   //UserRegister
 
@@ -38,9 +40,10 @@ class UserRegistrationDatasourceImpl extends ApiClient
             userRegistrationDtos.data![0].isNotEmpty &&
             userRegistrationDtos.data![0][0].token != null) {
           String token1 = userRegistrationDtos.data![0][0].token!;
+          String tokenExpiry = userRegistrationDtos.data![0][0].tokenExpiry!;
 
-          SharedPreferences prefs1 = await SharedPreferences.getInstance();
-          await prefs1.setString("token1", token1);
+          await prefsService.setToken(token1);
+          await prefsService.setTokenExpiry(tokenExpiry);
 
           print("registerUser Token saved: $token1");
         } else {
@@ -62,6 +65,7 @@ class UserRegistrationDatasourceImpl extends ApiClient
   //ActivateUser
 
   Future<UserActivateDtos?> activateUser(String qrCode) async {
+    final token1 = await prefsService.getToken();
     final url = Url.baseUrl;
     final requestBody = jsonEncode({
       "request": [
@@ -70,8 +74,6 @@ class UserRegistrationDatasourceImpl extends ApiClient
         {"Key": "QRCode", "Value": qrCode}
       ]
     });
-    SharedPreferences prefs1 = await SharedPreferences.getInstance();
-    final token1 = prefs1.getString("token1");
 
     try {
       final response = await client.post(Uri.parse(url),

@@ -22,6 +22,10 @@ class _PinSettingPageState extends State<PinSettingPage> {
     }
 
     if (_enterpinController.text == _confirmpinController.text) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('pin', _confirmpinController.text);
+      //await prefs.setBool('isMpinSet', true);
+      Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('PIN set successfully')),
       );
@@ -31,15 +35,12 @@ class _PinSettingPageState extends State<PinSettingPage> {
         SnackBar(content: Text('PINs do not match')),
       );
     }
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('pin', _confirmpinController.text);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         body: SingleChildScrollView(
           physics: NeverScrollableScrollPhysics(),
           child: Column(
@@ -57,7 +58,7 @@ class _PinSettingPageState extends State<PinSettingPage> {
               SizedBox(height: 5),
               Container(
                   decoration: BoxDecoration(
-                      color: Color(0xFFFFFFFF),
+                      color: Theme.of(context).colorScheme.onPrimary,
                       borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(28),
                           topRight: Radius.circular(28))),

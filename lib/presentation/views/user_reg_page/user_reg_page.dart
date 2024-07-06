@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mconnect_app/domain/entities/registration_entities.dart';
 import 'package:mconnect_app/presentation/logic/provider/user_reg_provider.dart';
-import 'package:mconnect_app/presentation/views/qr_scanner_page/qr_scanner_page.dart';
 import 'package:mconnect_app/utils/validations/register_validations.dart';
 import 'package:provider/provider.dart';
 
@@ -48,7 +47,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF2F5FC),
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: Column(
         children: [
           Padding(
@@ -65,7 +64,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                  color: Color(0xFFFFFFFF),
+                  color: Theme.of(context).colorScheme.onPrimary,
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(28),
                       topRight: Radius.circular(28))),
@@ -81,25 +80,32 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         TextFormField(
                             controller: _nameController,
                             decoration: InputDecoration(
-                              fillColor: Color(0xFFF4F5F7),
+                              fillColor: Theme.of(context)
+                                  .colorScheme
+                                  .primaryContainer,
                               filled: true,
                               labelText: "Name",
                               labelStyle: GoogleFonts.raleway(
-                                  fontSize: 14, color: Color(0xFF98A6BE)),
+                                  fontSize: 14,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onPrimaryContainer),
                               border: OutlineInputBorder(
                                   borderSide: BorderSide.none,
                                   borderRadius: BorderRadius.circular(17)),
                               errorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(17),
                                 borderSide: BorderSide(
-                                  color: Colors.red,
+                                  color:
+                                      Theme.of(context).colorScheme.onSecondary,
                                 ),
                               ),
                               focusedErrorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(17),
                                 borderSide: BorderSide(
-                                  color: Colors.red,
-                                ),
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSecondary),
                               ),
                               contentPadding: EdgeInsets.symmetric(
                                   vertical: 16, horizontal: 16),
@@ -115,25 +121,33 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             controller: _mobileController,
                             decoration: InputDecoration(
                               suffixIcon: Icon(Icons.phone_iphone_outlined,
-                                  color: Color(0xFF42526E)),
-                              fillColor: Color(0xFFF4F5F7),
+                                  color:
+                                      Theme.of(context).colorScheme.secondary),
+                              fillColor: Theme.of(context)
+                                  .colorScheme
+                                  .primaryContainer,
                               filled: true,
                               labelText: "Mobile",
                               labelStyle: GoogleFonts.raleway(
-                                  fontSize: 14, color: Color(0xFF98A6BE)),
+                                  fontSize: 14,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onPrimaryContainer),
                               border: OutlineInputBorder(
                                   borderSide: BorderSide.none,
                                   borderRadius: BorderRadius.circular(17)),
                               errorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(17),
                                 borderSide: BorderSide(
-                                  color: Colors.red,
+                                  color:
+                                      Theme.of(context).colorScheme.onSecondary,
                                 ),
                               ),
                               focusedErrorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(17),
                                 borderSide: BorderSide(
-                                  color: Colors.red,
+                                  color:
+                                      Theme.of(context).colorScheme.onSecondary,
                                 ),
                               ),
                               contentPadding: EdgeInsets.symmetric(
@@ -148,24 +162,30 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         TextFormField(
                           controller: _emailController,
                           decoration: InputDecoration(
-                            fillColor: Color(0xFFF4F5F7),
+                            fillColor:
+                                Theme.of(context).colorScheme.primaryContainer,
                             filled: true,
                             labelText: "Email",
                             labelStyle: GoogleFonts.raleway(
-                                fontSize: 14, color: Color(0xFF98A6BE)),
+                                fontSize: 14,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onPrimaryContainer),
                             border: OutlineInputBorder(
                                 borderSide: BorderSide.none,
                                 borderRadius: BorderRadius.circular(17)),
                             errorBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(17),
                               borderSide: BorderSide(
-                                color: Colors.red,
+                                color:
+                                    Theme.of(context).colorScheme.onSecondary,
                               ),
                             ),
                             focusedErrorBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(17),
                               borderSide: BorderSide(
-                                color: Colors.red,
+                                color:
+                                    Theme.of(context).colorScheme.onSecondary,
                               ),
                             ),
                             contentPadding: EdgeInsets.symmetric(
@@ -181,25 +201,32 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         TextFormField(
                             controller: _designationController,
                             decoration: InputDecoration(
-                              fillColor: Color(0xFFF4F5F7),
+                              fillColor: Theme.of(context)
+                                  .colorScheme
+                                  .primaryContainer,
                               filled: true,
                               labelText: "Designation",
                               labelStyle: GoogleFonts.raleway(
-                                  fontSize: 14, color: Color(0xFF98A6BE)),
+                                  fontSize: 14,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onPrimaryContainer),
                               border: OutlineInputBorder(
                                   borderSide: BorderSide.none,
                                   borderRadius: BorderRadius.circular(17)),
                               errorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(17),
                                 borderSide: BorderSide(
-                                  color: Colors.red,
-                                ),
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSecondary),
                               ),
                               focusedErrorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(17),
                                 borderSide: BorderSide(
-                                  color: Colors.red,
-                                ),
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSecondary),
                               ),
                               contentPadding: EdgeInsets.symmetric(
                                   vertical: 16, horizontal: 16),
@@ -223,26 +250,34 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                   icon: passwordVisible
                                       ? Icon(Icons.visibility_outlined)
                                       : Icon(Icons.visibility_off_outlined),
-                                  color: Color(0xFF42526E)),
-                              fillColor: Color(0xFFF4F5F7),
+                                  color:
+                                      Theme.of(context).colorScheme.secondary),
+                              fillColor: Theme.of(context)
+                                  .colorScheme
+                                  .primaryContainer,
                               filled: true,
                               labelText: "Password",
                               labelStyle: GoogleFonts.raleway(
-                                  fontSize: 14, color: Color(0xFF98A6BE)),
+                                  fontSize: 14,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onPrimaryContainer),
                               border: OutlineInputBorder(
                                   borderSide: BorderSide.none,
                                   borderRadius: BorderRadius.circular(17)),
                               errorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(17),
                                 borderSide: BorderSide(
-                                  color: Colors.red,
+                                  color:
+                                      Theme.of(context).colorScheme.onSecondary,
                                 ),
                               ),
                               focusedErrorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(17),
                                 borderSide: BorderSide(
-                                  color: Colors.red,
-                                ),
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSecondary),
                               ),
                               contentPadding: EdgeInsets.symmetric(
                                   vertical: 16, horizontal: 16),
@@ -267,25 +302,33 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                   icon: confirmPasswordVisible
                                       ? Icon(Icons.visibility_outlined)
                                       : Icon(Icons.visibility_off_outlined),
-                                  color: Color(0xFF42526E)),
-                              fillColor: Color(0xFFF4F5F7),
+                                  color:
+                                      Theme.of(context).colorScheme.secondary),
+                              fillColor: Theme.of(context)
+                                  .colorScheme
+                                  .primaryContainer,
                               filled: true,
                               labelText: "Confirm Password",
                               labelStyle: GoogleFonts.raleway(
-                                  fontSize: 14, color: Color(0xFF98A6BE)),
+                                  fontSize: 14,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onPrimaryContainer),
                               border: OutlineInputBorder(
                                   borderSide: BorderSide.none,
                                   borderRadius: BorderRadius.circular(17)),
                               errorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(17),
                                 borderSide: BorderSide(
-                                  color: Colors.red,
+                                  color:
+                                      Theme.of(context).colorScheme.onSecondary,
                                 ),
                               ),
                               focusedErrorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(17),
                                 borderSide: BorderSide(
-                                  color: Colors.red,
+                                  color:
+                                      Theme.of(context).colorScheme.onSecondary,
                                 ),
                               ),
                               contentPadding: EdgeInsets.symmetric(
@@ -298,7 +341,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         SizedBox(height: 20),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFF2F52A2),
+                              backgroundColor: Theme.of(context)
+                                  .colorScheme
+                                  .secondaryContainer,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15),
                               ),
@@ -330,7 +375,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                           child: Text('Register',
                               style: GoogleFonts.raleway(
                                   fontWeight: FontWeight.bold,
-                                  color: Color(0xFFFFFFFF),
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary,
                                   fontSize: 18)),
                         ),
                       ],

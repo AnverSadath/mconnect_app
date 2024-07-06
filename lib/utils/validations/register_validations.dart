@@ -34,7 +34,7 @@ class RegisterValidations {
     if (value == null || value.isEmpty) {
       return 'Please enter your email';
     }
-    if (!RegExp(r'^[a-zA-Z]+@gmail\.com$').hasMatch(value)) {
+    if (!value.contains('@gmail.com')) {
       return 'Please enter a valid Email address';
     }
     return null;
